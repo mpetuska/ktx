@@ -1,0 +1,6 @@
+.gradle/
+build/
+.idea/
+.fleet/
+.vscode/
+*.log
