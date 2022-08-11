@@ -2,6 +2,7 @@ package dev.petuska.ktx.cmd
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
 import dev.petuska.ktx.runner.ScriptRunner
 import java.io.File
 import kotlin.script.experimental.api.ResultValue
@@ -11,14 +12,15 @@ import kotlin.script.experimental.api.valueOrThrow
 import kotlin.system.exitProcess
 
 class Run : CliktCommand(
-  help = "Download and execute a binary"
+  help = "Download and execute a script or binary"
 ) {
-  private val target by argument()
+  private val source by argument()
+  private val args by argument().multiple()
 
   @Suppress("NestedBlockDepth")
   override fun run() {
-    if (target.endsWith(".main.kts")) {
-      val res = ScriptRunner.evalFile(File(target).absoluteFile, "arg1")
+    if (source.endsWith(".main.kts")) {
+      val res = ScriptRunner.evalFile(File(source).absoluteFile, args = args.toTypedArray())
       res.reports.forEach {
         if (it.severity >= ScriptDiagnostic.Severity.WARNING) {
           echo(

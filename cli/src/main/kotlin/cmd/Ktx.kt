@@ -11,6 +11,7 @@ class Ktx : NoOpCliktCommand(
   init {
     subcommands(
       Run(),
+      Install(),
       CompletionCommand(),
     )
   }
