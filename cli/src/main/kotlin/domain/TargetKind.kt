@@ -1,5 +1,5 @@
 package dev.petuska.ktx.domain
 
-enum class SourceKind {
+enum class TargetKind {
   AUTO, SCRIPT, JAR
 }

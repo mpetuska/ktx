@@ -5,12 +5,13 @@ plugins {
   id("org.beryx.runtime")
 }
 
-kotlin {
-  sourceSets {
-    test {
-      dependencies {
-        implementation("dev.petuska:klip:_")
-      }
-    }
+dependencies {
+//  testImplementation(kotlin("test-junit5"))
+  testImplementation("io.kotest:kotest-assertions-core:_")
+}
+
+tasks {
+  withType<Test> {
+    useJUnitPlatform()
   }
 }

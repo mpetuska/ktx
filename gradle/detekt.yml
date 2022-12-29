@@ -56,6 +56,8 @@ style:
       - MDCExternalAPI
 
 formatting:
+  Wrapping:
+    active: false
   Filename:
     active: false
   NoWildcardImports:

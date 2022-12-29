@@ -31,7 +31,7 @@ tasks {
     exclude("**/build", "scripts/")
   }
   if (project == rootProject) {
-    register("detektAll", io.gitlab.arturbosch.detekt.Detekt::class) {
+    register("detektAll", Detekt::class) {
       description = "Run Detekt for all modules"
       config.from(project.detekt.config)
       buildUponDefaultConfig = project.detekt.buildUponDefaultConfig

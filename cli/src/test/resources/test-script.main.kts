@@ -1,4 +1,3 @@
-#!/usr/bin/env kotlin
 println("SCRIPTING!")
-println(args.toList())
+println("Script args: ${args.toList()}")
 if (args.contains("error")) error("EXPECTED SCRIPT ERROR")

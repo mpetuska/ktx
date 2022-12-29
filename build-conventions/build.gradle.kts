@@ -18,6 +18,7 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
   implementation("org.jetbrains.kotlin:kotlin-serialization:_")
   implementation("com.github.jakemarsden:git-hooks-gradle-plugin:_")
+  implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:_")
   implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
   implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:_")
   implementation("dev.petuska:klip-gradle-plugin:_")
