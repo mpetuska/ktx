@@ -1,6 +1,7 @@
 plugins {
   id("convention.kjvm-app")
   id("com.google.devtools.ksp")
+  id("io.sdkman.vendors")
 }
 
 dependencies {
@@ -35,6 +36,16 @@ kotlin {
 application {
   mainClass.set("dev.petuska.ktx.MainKt")
   applicationName = rootProject.name
+}
+
+sdkman {
+  candidate.set(rootProject.name)
+  version.set(rootProject.version.toString())
+  platforms.put("LINUX_64", "https://github.com/mpetuska/ktx/archive/refs/tags/0.0.1.zip")
+  hashtag.set(rootProject.name)
+
+  consumerKey.set("TODO")
+  consumerToken.set("TODO")
 }
 
 runtime {

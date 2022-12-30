@@ -23,6 +23,7 @@ dependencies {
   implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:_")
   implementation("dev.petuska:klip-gradle-plugin:_")
   implementation("org.beryx:badass-runtime-plugin:_")
+  implementation("io.sdkman:gradle-sdkvendor-plugin:_")
   @OptIn(InternalRefreshVersionsApi::class)
   implementation("de.fayard.refreshVersions:refreshVersions-core:${RefreshVersionsCorePlugin.currentVersion}")
 }
