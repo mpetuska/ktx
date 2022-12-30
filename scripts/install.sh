@@ -2,7 +2,8 @@
 
 version=latest
 destination="$HOME/.local/share"
-src="${1:=}"
+local_path="$1"
+src="${local_path:=https://github.com/mpetuska/ktx/releases/latest}"
 
 echo "Installing ktx@$version to $destination/ktx"
 mkdir -p "$destination"
@@ -11,14 +12,17 @@ rm -rf "$destination/ktx"
 workdir="/tmp/ktx"
 mkdir -p "$workdir"
 outfile="$workdir/ktx.zip"
-if [[ "$src" =~ ^http* ]]; then
+if [[ -z "$1" ]]; then
   echo "Downloading $version release"
-  echo curling
+  tag="$(curl -Ls -o /dev/null -w %\{url_effective\} "$src")"
+  tag="${tag##*/}"
+  curl "https://github.com/mpetuska/ktx/releases/download/$tag/ktx.zip" -Lo "$outfile"
 else
-  echo "Installing from $1"
-  cp $1 "$outfile"
+  echo "Installing from $src"
+  cp "$src" "$outfile"
 fi
 unzip "$outfile" -d "$destination"
+rm -rf "$workdir"
 unzip -j "$destination/ktx/lib/cli.jar" ".ktxrc" -d "$destination/ktx"
 
 echo "Setting up ktx environment"
@@ -29,11 +33,11 @@ rm -rf "$target"
 ln -s "$destination/ktx/bin/ktx" "$target"
 
 function append-source() {
-   local sourcestr="source \"$destination/ktx/.ktxrc\""
+  local sourcestr="source \"$destination/ktx/.ktxrc\""
 
-   if [[ -f "$1" && -z $(grep "$sourcestr" "$1") ]]; then
-     echo "source \"$destination/ktx/.ktxrc\"" >> "$1"
-   fi
+  if [[ -f "$1" && -z $(grep "$sourcestr" "$1") ]]; then
+    echo "source \"$destination/ktx/.ktxrc\"" >>"$1"
+  fi
 }
 
 append-source "$HOME/.profile"

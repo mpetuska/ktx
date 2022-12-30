@@ -13,12 +13,12 @@ class CleanTest : KtxTest("clean") {
   @Test
   fun cleanCache() {
     dirService.cache.mkdirs()
-    val file = dirService.cache.resolve("someFile").also(File::createNewFile)
+    val file = dirService.cache.resolve("someFile.txt").also(File::createNewFile)
     val dir = dirService.cache.resolve("someDir").also {
       it.mkdirs()
-      it.resolve("child").createNewFile()
+      it.resolve("child.txt").createNewFile()
     }
-    execute()
+    execute("--cache")
     dirService.cache.shouldExist()
     file.shouldNotExist()
     dir.shouldNotExist()
