@@ -1,0 +1,46 @@
+name: PR CI/CD
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, closed ]
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
+  build:
+    needs: [ check ]
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    name: Build App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore Gradle cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 11
+      - name: Build Apps
+        run: ./gradlew :cli:distZip
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        id: upload
+        with:
+          path: cli/build/distributions/ktx.zip
+          name: ktx.zip
+          if-no-files-found: error

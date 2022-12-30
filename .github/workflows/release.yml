@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  release:
+    types: [ created ]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Apps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Restore Gradle cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 11
+
+      - name: Build Apps
+        run: ./gradlew :cli:distZip
+
+      - name: Upload Binaries
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./cli/build/distributions/ktx.zip
+          asset_name: ktx.zip
+          asset_content_type: application/zip
