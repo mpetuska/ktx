@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -z "$KTX_HOME" ]]; then
+  export KTX_BIN="$(dirname -- "$(readlink -f "${BASH_SOURCE}")")/bin"
+  export KTX_HOME="$HOME/.ktx"
+  export PATH="$KTX_BIN:$KTX_HOME/bin:$PATH"
+fi

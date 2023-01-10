@@ -1,42 +1,32 @@
 package dev.petuska.ktx.service
 
-import dev.petuska.ktx.test.util.extractTempResource
-import io.kotest.matchers.file.shouldExist
-import io.kotest.matchers.file.shouldNotBeEmpty
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.ktor.client.*
+import io.kotest.matchers.string.shouldNotBeEmpty
 import kotlinx.coroutines.test.runTest
+import okio.Path.Companion.toPath
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
-import org.junit.jupiter.api.io.TempDir
-import org.koin.ksp.generated.module
-import org.koin.test.junit5.KoinTestExtension
-import java.io.File
+import org.koin.test.inject
+import test.util.ITest
 
-class ResourceServiceTest {
-  @RegisterExtension
-  val koinTestRule = KoinTestExtension.create {
-    modules(ServicesModule.module)
-  }
-
-  @field:TempDir
-  lateinit var home: File
-  private val dirService: DirService get() = DirService(home.absolutePath)
-
-  private val target get() = ResourceService(FileService(dirService), HttpClient())
+class ResourceServiceTest : ITest() {
+  private val target: ResourceService by inject()
 
   @Test
   fun resolveRemoteResource() = runTest {
-    val result = target.resolve("https://raw.githubusercontent.com/mpetuska/ktx/master/README.md")
-    result.shouldExist()
-    result.shouldNotBeEmpty()
+    target.resolve("https://raw.githubusercontent.com/mpetuska/ktx/master/README.md").should {
+      fileSystem.exists(it).shouldBeTrue()
+      fileSystem.read(it) { readUtf8() }.shouldNotBeEmpty()
+    }
   }
 
   @Test
   fun resolveLocalResource() = runTest {
-    val file = extractTempResource("/test-script.main.kts")
-    val result = target.resolve(file.absolutePath)
-    result.shouldExist()
-    result shouldBe file
+    val file = extractTempResource("/test-script.main.kts".toPath())
+    target.resolve(file.toString()).should {
+      fileSystem.exists(it).shouldBeTrue()
+      it shouldBe file
+    }
   }
 }

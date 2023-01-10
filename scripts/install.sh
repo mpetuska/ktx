@@ -16,32 +16,17 @@ if [[ -z "$1" ]]; then
   echo "Downloading $version release"
   tag="$(curl -Ls -o /dev/null -w %\{url_effective\} "$src")"
   tag="${tag##*/}"
-  curl "https://github.com/mpetuska/ktx/releases/download/$tag/ktx.zip" -Lo "$outfile"
+  curl "https://github.com/mpetuska/ktx/releases/download/$tag/ktx-$tag.zip" -Lo "$outfile"
 else
   echo "Installing from $src"
   cp "$src" "$outfile"
 fi
 unzip "$outfile" -d "$destination"
+mv "$destination"/ktx* "$destination/ktx"
 rm -rf "$workdir"
-unzip -j "$destination/ktx/lib/cli.jar" ".ktxrc" -d "$destination/ktx"
 
 echo "Setting up ktx environment"
-bindir="$HOME/.local/bin"
-mkdir -p "$bindir"
-target="$bindir/ktx"
-rm -rf "$target"
-ln -s "$destination/ktx/bin/ktx" "$target"
-
-function append-source() {
-  local sourcestr="source \"$destination/ktx/.ktxrc\""
-
-  if [[ -f "$1" && -z $(grep "$sourcestr" "$1") ]]; then
-    echo "source \"$destination/ktx/.ktxrc\"" >>"$1"
-  fi
-}
-
-append-source "$HOME/.profile"
-append-source "$HOME/.bashrc"
-append-source "$HOME/.zshrc"
+"$destination/ktx/bin/ktx" migrate
+"$destination/ktx/bin/ktx" version
 
 echo "ktx was installed! Either start a new terminal session or source $destination/ktx/.ktxrc"

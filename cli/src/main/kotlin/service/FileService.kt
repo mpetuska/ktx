@@ -1,40 +1,36 @@
 package dev.petuska.ktx.service
 
-import io.ktor.util.cio.*
-import io.ktor.utils.io.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import okio.FileSystem
+import okio.Path
+import okio.Source
 import org.koin.core.annotation.Single
-import java.io.File
 
 @Single
 class FileService(
   private val dirService: DirService,
+  private val fileSystem: FileSystem,
 ) {
-  suspend fun writeBin(name: String, content: ByteReadChannel, force: Boolean = false) =
-    write(target = dirService.bin.resolve(name), content = content, executable = true, force = force)
+  fun linkBin(name: String, target: Path, force: Boolean = false): Path {
+    val link = dirService.bin.resolve(name)
+    if (force) fileSystem.delete(link)
+    link.parent?.let(fileSystem::createDirectories)
+    fileSystem.createSymlink(link, target)
+    return link
+  }
 
-  suspend fun writeCache(name: String, content: ByteReadChannel, force: Boolean = false) =
-    write(target = dirService.cache.resolve(name), content = content, executable = true, force = force)
+  fun writeCache(name: String, content: Source, force: Boolean = false) =
+    write(target = dirService.cache.resolve(name), content = content, force = force)
 
-  fun getCache(name: String): File? = dirService.cache.resolve(name).takeIf(File::exists)
+  fun getCache(name: String): Path? = dirService.cache.resolve(name).takeIf(fileSystem::exists)
 
-  suspend fun writeJar(name: String, content: ByteReadChannel, force: Boolean = false) =
-    write(target = dirService.jars.resolve(name), content = content, executable = true, force = force)
+  fun writeScript(name: String, content: Source, force: Boolean = false) =
+    write(target = dirService.scripts.resolve(name), content = content, force = force)
 
-  suspend fun writeScript(name: String, content: ByteReadChannel, force: Boolean = false) =
-    write(target = dirService.scripts.resolve(name), content = content, executable = true, force = force)
-
-  suspend fun copyScript(source: File, force: Boolean = false) =
-    writeScript(name = source.name, content = source.readChannel(), force = force)
-
-  private suspend fun write(target: File, content: ByteReadChannel, executable: Boolean, force: Boolean): File {
-    require(force || !target.exists()) { "${target.absolutePath} already exists!" }
-    withContext(Dispatchers.IO) {
-      target.parentFile.mkdirs()
-      target.createNewFile()
-      target.writeChannel().use { content.copyTo(this) }
-      target.setExecutable(executable)
+  private fun write(target: Path, content: Source, force: Boolean): Path {
+    if (force) fileSystem.delete(target)
+    target.parent?.let(fileSystem::createDirectories)
+    fileSystem.write(target, true) {
+      writeAll(content)
     }
     return target
   }

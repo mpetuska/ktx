@@ -8,6 +8,9 @@ concurrency:
   group: release
   cancel-in-progress: false
 
+env:
+  ORG_GRADLE_PROJECT_version: ${{ github.ref_name }}
+
 jobs:
   build:
     name: Build Apps
@@ -42,6 +45,18 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./cli/build/distributions/ktx.zip
+          asset_path: ./cli/build/distributions/ktx-${{ github.ref_name }}.zip
           asset_name: ktx.zip
           asset_content_type: application/zip
+
+  sdkman:
+    needs: [ build ]
+    name: SDKMAN
+    runs-on: ubuntu-latest
+    environment: sdkman
+    env:
+      SDKMAN_KEY: ${{ secrets.SDKMAN_KEY }}
+      SDKMAN_TOKEN: ${{ secrets.SDKMAN_TOKEN }}
+    steps:
+      - name: Announce on sdkman
+        run: ./gradlew :cli:sdkMajorRelease

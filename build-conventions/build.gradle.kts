@@ -1,7 +1,4 @@
-@file:Suppress("OPT_IN_IS_NOT_ENABLED")
-
-import de.fayard.refreshVersions.core.RefreshVersionsCorePlugin
-import de.fayard.refreshVersions.core.internal.InternalRefreshVersionsApi
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -20,18 +17,15 @@ dependencies {
   implementation("com.github.jakemarsden:git-hooks-gradle-plugin:_")
   implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:_")
   implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
-  implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:_")
   implementation("dev.petuska:klip-gradle-plugin:_")
-  implementation("org.beryx:badass-runtime-plugin:_")
   implementation("io.sdkman:gradle-sdkvendor-plugin:_")
-  @OptIn(InternalRefreshVersionsApi::class)
-  implementation("de.fayard.refreshVersions:refreshVersions-core:${RefreshVersionsCorePlugin.currentVersion}")
+  implementation("com.autonomousapps:dependency-analysis-gradle-plugin:_")
 }
 
 tasks {
   withType<KotlinCompile> {
-    kotlinOptions {
-      languageVersion = "1.4"
+    compilerOptions {
+      languageVersion.set(KotlinVersion.KOTLIN_1_9)
     }
   }
 }

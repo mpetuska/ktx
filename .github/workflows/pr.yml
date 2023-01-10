@@ -7,8 +7,11 @@ on:
       - master
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
+
+env:
+  ORG_GRADLE_PROJECT_version: PR-${{ github.head_ref || github.ref_name }}
 
 jobs:
   check:
@@ -41,6 +44,6 @@ jobs:
         uses: actions/upload-artifact@v3
         id: upload
         with:
-          path: cli/build/distributions/ktx.zip
-          name: ktx.zip
+          path: cli/build/distributions/ktx-${{ env.ORG_GRADLE_PROJECT_version }}.zip
+          name: ktx-${{ env.ORG_GRADLE_PROJECT_version }}
           if-no-files-found: error
