@@ -38,7 +38,7 @@ jobs:
       - name: Build Apps
         run: ./gradlew :cli:distZip
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         id: upload
         with:
           path: cli/build/distributions/ktx.zip
