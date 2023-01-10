@@ -1,0 +1,54 @@
+package dev.petuska.ktx.cmd
+
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.types.file
+import dev.petuska.ktx.service.KtsService
+import dev.petuska.ktx.service.SystemService
+import kotlinx.coroutines.runBlocking
+import org.koin.core.annotation.Single
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import kotlin.script.experimental.api.*
+
+@Single
+class Execute : CliktCommand(
+  help = "Executes a local script assuming all arguments to be script arguments",
+  hidden = true,
+  treatUnknownOptionsAsArgs = true,
+), KoinComponent {
+  private val target by argument().file(mustExist = true, canBeDir = false)
+  private val args by argument().multiple()
+
+  private val systemService: SystemService by inject()
+  private val ktsService: KtsService by inject()
+
+  override fun run() = runBlocking {
+    val result = ktsService.evalFile(target, args = args.toTypedArray())
+    processResult(result)
+  }
+
+  private fun processResult(result: ResultWithDiagnostics<EvaluationResult>) {
+    result.reports.forEach {
+      if (it.severity >= ScriptDiagnostic.Severity.WARNING) {
+        echo(
+          message = "${it.severity.name}: ${it.message}",
+          err = it.severity > ScriptDiagnostic.Severity.WARNING
+        )
+        it.exception?.let { ex ->
+          echo(
+            message = "${it.severity.name}: ${ex.stackTraceToString()}",
+            err = it.severity > ScriptDiagnostic.Severity.WARNING
+          )
+        }
+      }
+    }
+
+    val value = result.valueOrThrow().returnValue
+    if (value is ResultValue.Error) {
+      echo("ERROR: ${value.error.message}", err = true)
+    }
+    systemService.exitProcess(if (result is ResultWithDiagnostics.Failure || value is ResultValue.Error) 1 else 0)
+  }
+}

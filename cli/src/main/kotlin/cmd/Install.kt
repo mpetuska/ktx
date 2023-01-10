@@ -9,12 +9,13 @@ import com.github.ajalt.clikt.parameters.options.switch
 import dev.petuska.ktx.domain.TargetKind
 import dev.petuska.ktx.service.FileService
 import dev.petuska.ktx.service.ResourceService
-import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
+import okio.Buffer
+import okio.FileSystem
+import okio.Path
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
 
 @Single
 class Install : CliktCommand(
@@ -28,6 +29,7 @@ class Install : CliktCommand(
   private val force by option().flag()
   private val alias by option()
 
+  private val fileSystem: FileSystem by inject()
   private val fileService: FileService by inject()
   private val resourceService: ResourceService by inject()
 
@@ -41,17 +43,28 @@ class Install : CliktCommand(
     installScript(script)
   }
 
-  private suspend fun installScript(scriptFile: File) {
-    val destination = fileService.copyScript(scriptFile, force)
-    fileService.writeBin(
-      name = alias ?: scriptFile.name.removeSuffix(".main.kts").removeSuffix(".kts"),
-      content = ByteReadChannel(
-        """
-        #!/usr/bin/env bash
-        ktx run --script ${destination.absolutePath} ${'$'}@
-        """.trimIndent().toByteArray()
-      ),
-      force = force,
+  private fun installScript(scriptPath: Path) {
+    val lines = fileSystem.read(scriptPath) {
+      buildList {
+        while (!exhausted()) {
+          add(readUtf8LineStrict())
+        }
+      }
+    }.toMutableList()
+    if (lines.first().startsWith("#!")) {
+      lines.removeFirst()
+    }
+    lines.add(0, "#!/usr/bin/env -S ktx execute")
+    val script = fileService.writeScript(
+      name = scriptPath.name,
+      force = true,
+      content = Buffer().apply { lines.forEach { writeUtf8(it + '\n') } }
+    )
+    script.toFile().setExecutable(true)
+    fileService.linkBin(
+      alias ?: scriptPath.name.removeSuffix(".main.kts").removeSuffix(".kts"),
+      script,
+      force
     )
   }
 }

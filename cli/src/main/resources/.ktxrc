@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ -z "$KTX_HOME" ]]; then
-  KTX_HOME="$HOME/.ktx"
-  PATH="$KTX_HOME/bin:$PATH"
-fi

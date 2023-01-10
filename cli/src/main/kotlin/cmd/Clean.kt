@@ -4,10 +4,11 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import dev.petuska.ktx.service.DirService
+import okio.FileSystem
+import okio.Path
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
 
 @Single
 class Clean : CliktCommand(
@@ -17,20 +18,19 @@ class Clean : CliktCommand(
   private val bin by option().flag()
   private val cache by option().flag()
   private val scripts by option().flag()
-  private val jars by option().flag()
 
   private val dirService: DirService by inject()
+  private val fileSystem: FileSystem by inject()
 
   override fun run() {
     if (cache) dirService.cache.clear()
     if (all) dirService.home.clear()
     if (bin) dirService.bin.clear()
     if (scripts) dirService.scripts.clear()
-    if (jars) dirService.jars.clear()
   }
 
-  private fun File.clear() = listFiles()?.forEach {
-    echo("Removing ${it.absolutePath}")
-    it.deleteRecursively()
+  private fun Path.clear() = fileSystem.list(this).forEach {
+    echo("Removing $it")
+    fileSystem.deleteRecursively(it)
   }
 }

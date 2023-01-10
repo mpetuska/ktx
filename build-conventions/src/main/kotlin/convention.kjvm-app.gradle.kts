@@ -1,17 +1,28 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   id("convention.common")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.beryx.runtime")
+  application
 }
 
 dependencies {
-//  testImplementation(kotlin("test-junit5"))
   testImplementation("io.kotest:kotest-assertions-core:_")
+}
+
+java {
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 tasks {
   withType<Test> {
     useJUnitPlatform()
+  }
+  withType<KotlinCompile> {
+    compilerOptions {
+      jvmTarget.set(provider { JvmTarget.fromTarget("${java.targetCompatibility}") })
+    }
   }
 }
