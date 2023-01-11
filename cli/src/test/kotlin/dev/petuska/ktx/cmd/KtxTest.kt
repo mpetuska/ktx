@@ -18,7 +18,7 @@ abstract class KtxTest(private val command: String) : ITest() {
   @RegisterExtension
   override val koinExtension = KoinTestExtension.create {
     allowOverride(true)
-    properties(mapOf("KTX_HOME" to ktxHome.absolutePath))
+    properties(mapOf("KTX_DIR" to ktxHome.absolutePath))
     modules(
       ServicesModule.module,
       CmdModule.module,

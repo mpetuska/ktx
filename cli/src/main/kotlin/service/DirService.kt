@@ -7,7 +7,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class DirService(
-  @Property("KTX_HOME")
+  @Property("KTX_DIR")
   ktxHome: String?,
   private val fileSystem: FileSystem,
 ) {
