@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import dev.petuska.ktx.service.DirService
 import dev.petuska.ktx.service.SystemService
+import okio.BufferedSource
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -16,7 +17,7 @@ import java.io.File
 
 @Single
 class Migrate(
-  @Property("KTX_BIN") ktxBin: String?,
+  @Property("KTX_DIR") ktxDir: String?,
 ) : CliktCommand(
   help = "Migrate from previous ktx versions",
 ), KoinComponent {
@@ -25,8 +26,9 @@ class Migrate(
   private val dirService: DirService by inject()
   private val fileSystem: FileSystem by inject()
 
-  private val currentVersion =
-    ktxBin?.toPath()?.resolve("../.version")?.takeIf(fileSystem::exists)?.let { fileSystem.read(it) { readUtf8() } }
+  private val currentVersionFile = ktxDir?.toPath()?.resolve(".version")
+  private val currentVersion = currentVersionFile?.takeIf(fileSystem::exists)
+    ?.let { fileSystem.read(it, BufferedSource::readUtf8) }
   private val selfVersion = systemService.version
   private val selfLocation by lazy {
     this::class.java.protectionDomain.codeSource.location.toURI().let(::File).parentFile
@@ -34,6 +36,7 @@ class Migrate(
 
   override fun run() {
     if (currentVersion != selfVersion) {
+      if (!quiet) echo("New ktx version detected. Performing migrations...")
       switchRc()
       val start = currentVersion?.let { migrations.indexOfFirst { (v, _) -> v == currentVersion }.inc() } ?: 0
       var last: String? = null
@@ -43,7 +46,10 @@ class Migrate(
         next.second()
         last = next.first
       }
-      if (!quiet) echo("ktx was migrated to $selfVersion successfully")
+      currentVersionFile?.let(fileSystem::createDirectories)
+      currentVersionFile?.let { fileSystem.write(it) { writeUtf8(selfVersion) } }
+      if (!quiet) echo("ktx was migrated to $selfVersion successfully. Terminating current process...")
+      systemService.exitProcess(0)
     } else {
       if (!quiet) echo("ktx is already migrated to $selfVersion version")
     }
