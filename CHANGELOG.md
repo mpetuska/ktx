@@ -11,19 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Removed
+
+---
+
+## [0.1.0]
+
+Maven packages support has landed!
+
+### Added
+
 - [sdkman](https://sdkman.io) distribution
 - New `migrate` command for more future flexibility between version changes
 - Version awareness and new `version` command for self diagnostics
 - `JRE 11+` requirement
 - Script execution with `jvmTarget=11` (temporary, configuration options for this will be added in the future)
 - `kts-samples` with sample scripts that are semi-useful to try ktx out with
+- Maven package execution and installation support
 
 ### Changed
 
 - `ktx` start script directory now gets added to `PATH` directly
 - Replace bash starter scripts with symbolic links to kts scripts and ktx shebang
 - Improve ktx install scripts to better propagate arguments to target script
-- Replaced all `java.io.File` usages to `okio` APIs for quicker testing
+- Replaced most `java.io.File` usages to `okio` APIs for quicker testing
 
 ### Removed
 
@@ -49,8 +62,8 @@ Initial developer preview release
 
 ---
 
-[Unreleased]: https://github.com/mpetuska/ktx/compare/0.0.2...HEAD
+[Unreleased]: https://github.com/mpetuska/ktx/compare/0.1.0...HEAD
 
-[0.0.2]: https://github.com/mpetuska/ktx/compare/0.0.1...0.0.2
+[0.1.0]: https://github.com/mpetuska/ktx/compare/0.0.1...0.1.0
 
 [0.0.1]: https://github.com/mpetuska/ktx/releases/tag/0.0.1

@@ -2,7 +2,6 @@ package dev.petuska.ktx.cmd
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.switch
@@ -24,8 +23,8 @@ class Install : CliktCommand(
   private val target by argument()
   private val kind by option().switch(
     "--script" to TargetKind.SCRIPT,
-    "--jar" to TargetKind.JAR,
-  ).default(TargetKind.AUTO)
+    "--jar" to TargetKind.PACKAGE,
+  )
   private val force by option().flag()
   private val alias by option()
 
@@ -34,23 +33,14 @@ class Install : CliktCommand(
   private val resourceService: ResourceService by inject()
 
   override fun run() = runBlocking {
-    val file = resourceService.resolve(target)
-    val script = when (kind) {
-      TargetKind.SCRIPT -> file
-      TargetKind.JAR -> TODO("JAR execution not supported yet")
-      TargetKind.AUTO -> if (target.endsWith(".kts")) file else TODO("JAR execution not supported yet")
-    }
+    val script = resourceService.resolve(target, kind)
     installScript(script)
   }
 
   private fun installScript(scriptPath: Path) {
     val lines = fileSystem.read(scriptPath) {
-      buildList {
-        while (!exhausted()) {
-          add(readUtf8LineStrict())
-        }
-      }
-    }.toMutableList()
+      readUtf8()
+    }.split("\n").toMutableList()
     if (lines.first().startsWith("#!")) {
       lines.removeFirst()
     }
