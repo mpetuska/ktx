@@ -43,11 +43,8 @@ application {
 sdkman {
   candidate.set(rootProject.name)
   version.set(rootProject.version.toString())
-  url.set("https://github.com/mpetuska/ktx/releases/download/$version/ktx.zip")
+  url.set("https://github.com/mpetuska/ktx/releases/download/$version/ktx-$version.zip")
   hashtag.set(rootProject.name)
-
-  consumerKey.set("TODO")
-  consumerToken.set("TODO")
 }
 
 tasks {
