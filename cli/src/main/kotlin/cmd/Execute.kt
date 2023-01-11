@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import kotlin.script.experimental.api.*
 
 @Single
@@ -24,8 +25,10 @@ class Execute : CliktCommand(
   private val systemService: SystemService by inject()
   private val ktsService: KtsService by inject()
 
-  override fun run() = runBlocking {
-    val result = ktsService.evalFile(target, args = args.toTypedArray())
+  override fun run() = executeScript(target, args.toTypedArray())
+
+  internal fun executeScript(target: File, args: Array<String>) = runBlocking {
+    val result = ktsService.evalFile(target, args = args)
     processResult(result)
   }
 

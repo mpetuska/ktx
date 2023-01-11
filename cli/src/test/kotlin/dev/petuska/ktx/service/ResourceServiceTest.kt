@@ -15,7 +15,7 @@ class ResourceServiceTest : ITest() {
 
   @Test
   fun resolveRemoteResource() = runTest {
-    target.resolve("https://raw.githubusercontent.com/mpetuska/ktx/master/README.md").should {
+    target.resolve("https://raw.githubusercontent.com/mpetuska/ktx/master/README.md", null).should {
       fileSystem.exists(it).shouldBeTrue()
       fileSystem.read(it) { readUtf8() }.shouldNotBeEmpty()
     }
@@ -24,7 +24,7 @@ class ResourceServiceTest : ITest() {
   @Test
   fun resolveLocalResource() = runTest {
     val file = extractTempResource("/test-script.main.kts".toPath())
-    target.resolve(file.toString()).should {
+    target.resolve(file.toString(), null).should {
       fileSystem.exists(it).shouldBeTrue()
       it shouldBe file
     }

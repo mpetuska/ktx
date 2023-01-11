@@ -56,6 +56,10 @@ class Migrate(
    */
   private val migrations: List<Pair<String, () -> Unit>> = listOf("0.0.2" to {
     dirService.home.resolve("jars").let(fileSystem::deleteRecursively)
+    fileSystem.list(dirService.bin).forEach {
+      echo("Removing $it due to incompatibility with ktx@$selfVersion. Please reinstall it.")
+      fileSystem.deleteRecursively(it)
+    }
   })
 
   private fun switchRc() {
