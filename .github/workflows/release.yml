@@ -46,7 +46,7 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./cli/build/distributions/ktx-${{ github.ref_name }}.zip
-          asset_name: ktx.zip
+          asset_name: ktx-${{ github.ref_name }}.zip
           asset_content_type: application/zip
 
   sdkman:
