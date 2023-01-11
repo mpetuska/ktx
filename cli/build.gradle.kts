@@ -42,8 +42,8 @@ application {
 
 sdkman {
   candidate.set(rootProject.name)
-  version.set(rootProject.version.toString())
-  url.set("https://github.com/mpetuska/ktx/releases/download/$version/ktx-$version.zip")
+  version.set("${project.version}")
+  url.set("https://github.com/mpetuska/ktx/releases/download/${project.version}/ktx-${project.version}.zip")
   hashtag.set(rootProject.name)
 }
 
