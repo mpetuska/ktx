@@ -5,7 +5,7 @@ Install and execute Maven Central packages or kotlin scripts just like any other
 
 ## Installation
 
-### (Recommended) [SDKMAN](sdkman.io)
+### (Recommended) [SDKMAN](https://sdkman.io)
 
 ```shell
 sdk install ktx
@@ -19,7 +19,7 @@ curl https://raw.githubusercontent.com/mpetuska/ktx/master/scripts/install.sh | 
 
 ## Uninstallation
 
-### (Recommended) [SDKMAN](sdkman.io)
+### (Recommended) [SDKMAN](https://sdkman.io)
 
 ```shell
 # Check which versions are installed
