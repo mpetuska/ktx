@@ -22,6 +22,7 @@ class Migrate(
   help = "Migrate from previous ktx versions",
 ), KoinComponent {
   private val quiet by option().flag()
+  private val light by option().flag()
   private val systemService: SystemService by inject()
   private val dirService: DirService by inject()
   private val fileSystem: FileSystem by inject()
@@ -35,9 +36,9 @@ class Migrate(
   }
 
   override fun run() {
-    if (currentVersion != selfVersion) {
+    switchRc()
+    if (!light && currentVersion != selfVersion) {
       if (!quiet) echo("New ktx version detected. Performing migrations...")
-      switchRc()
       val start = currentVersion?.let { migrations.indexOfFirst { (v, _) -> v == currentVersion }.inc() } ?: 0
       var last: String? = null
       for (i in start until migrations.size) {
@@ -60,13 +61,26 @@ class Migrate(
    * @param key target version
    * @param value lambda that migrates the state to target version from previous migration
    */
-  private val migrations: List<Pair<String, () -> Unit>> = listOf("0.0.2" to {
-    dirService.home.resolve("jars").takeIf(fileSystem::exists)?.let(fileSystem::deleteRecursively)
-    dirService.bin.takeIf(fileSystem::exists)?.let(fileSystem::list)?.forEach {
-      echo("Removing $it due to incompatibility with ktx@$selfVersion. Please reinstall it.")
-      fileSystem.deleteRecursively(it)
+  private val migrations: List<Pair<String, () -> Unit>> = listOf(
+    "0.0.2" to {
+      dirService.home.resolve("jars").takeIf(fileSystem::exists)?.let(fileSystem::deleteRecursively)
+      dirService.bin.takeIf(fileSystem::exists)?.let(fileSystem::list)?.forEach {
+        echo("Removing $it due to incompatibility with ktx@$selfVersion. Please reinstall it.")
+        fileSystem.deleteRecursively(it)
+      }
+    },
+    "0.1.2" to {
+      val sourceRegex = Regex("source \".*/\\.ktxrc\"")
+      dirService.profile?.let {
+        var content = fileSystem.read(it) { readUtf8() }
+        if (content.contains(sourceRegex)) {
+          content = content.replace(sourceRegex, "")
+        }
+        fileSystem.write(it) { writeUtf8(content) }
+        if(!quiet) echo("$it cleaned up")
+      }
     }
-  })
+  )
 
   private fun switchRc() {
     val ktxrc = selfLocation.parentFile.resolve(".ktxrc").absolutePath
@@ -79,11 +93,9 @@ class Migrate(
       } else {
         content += "$sourceStr\n"
       }
-      fileSystem.write(rcFile) {
-        writeUtf8(content)
-      }
+      fileSystem.write(rcFile) { writeUtf8(content) }
+      if(!quiet) echo("$rcFile updated. Open a new terminal or source $ktxrc")
     }
-    dirService.profile?.let { appendRc(it) }
     dirService.bashrc?.let { appendRc(it) }
     dirService.zshrc?.let { appendRc(it) }
   }

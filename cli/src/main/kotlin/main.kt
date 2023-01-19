@@ -18,6 +18,6 @@ fun main(vararg args: String) {
     )
     environmentProperties()
   }.koin
-  koin.get<Migrate>().main(arrayOf("--quiet"))
+  koin.get<Migrate>().main(arrayOf("--quiet", "--light"))
   Ktx().main(args)
 }
