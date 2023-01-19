@@ -47,7 +47,7 @@ class Migrate(
         next.second()
         last = next.first
       }
-      currentVersionFile?.let(fileSystem::createDirectories)
+      currentVersionFile?.parent?.let(fileSystem::createDirectories)
       currentVersionFile?.let { fileSystem.write(it) { writeUtf8(selfVersion) } }
       if (!quiet) echo("ktx was migrated to $selfVersion successfully. Terminating current process...")
       systemService.exitProcess(0)
