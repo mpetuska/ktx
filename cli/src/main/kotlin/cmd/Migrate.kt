@@ -21,8 +21,17 @@ class Migrate(
 ) : CliktCommand(
   help = "Migrate from previous ktx versions",
 ), KoinComponent {
-  private val quiet by option().flag()
-  private val light by option().flag()
+  private val quiet by option(
+    "--quiet",
+    "-q",
+    help = "Suppress logging"
+  ).flag()
+  private val light by option(
+    "--light",
+    "-l",
+    help = "Do not attempt any version migrations"
+  ).flag()
+
   private val systemService: SystemService by inject()
   private val dirService: DirService by inject()
   private val fileSystem: FileSystem by inject()
@@ -39,7 +48,8 @@ class Migrate(
     switchRc()
     if (!light && currentVersion != selfVersion) {
       if (!quiet) echo("New ktx version detected. Performing migrations...")
-      val start = currentVersion?.let { migrations.indexOfFirst { (v, _) -> v == currentVersion }.inc() } ?: 0
+      val start =
+        currentVersion?.let { migrations.indexOfFirst { (v, _) -> v == currentVersion }.inc() } ?: 0
       var last: String? = null
       for (i in start until migrations.size) {
         val next = migrations[i]
@@ -77,7 +87,7 @@ class Migrate(
           content = content.replace(sourceRegex, "")
         }
         fileSystem.write(it) { writeUtf8(content) }
-        if(!quiet) echo("$it cleaned up")
+        if (!quiet) echo("$it cleaned up")
       }
     }
   )
@@ -94,7 +104,7 @@ class Migrate(
         content += "$sourceStr\n"
       }
       fileSystem.write(rcFile) { writeUtf8(content) }
-      if(!quiet) echo("$rcFile updated. Open a new terminal or source $ktxrc")
+      if (!quiet) echo("$rcFile updated. Open a new terminal or source $ktxrc")
     }
     dirService.bashrc?.let { appendRc(it) }
     dirService.zshrc?.let { appendRc(it) }

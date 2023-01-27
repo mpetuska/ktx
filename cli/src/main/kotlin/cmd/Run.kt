@@ -15,11 +15,16 @@ import org.koin.core.component.inject
 @Single
 class Run : CliktCommand(
   help = "Download and execute a script or binary",
+  treatUnknownOptionsAsArgs = true,
 ), KoinComponent {
-  private val target by argument()
-  private val kind by option().switch(
+  private val kind by option(
+    help = "Run target kind. Detected automatically if not specified"
+  ).switch(
     "--script" to TargetKind.SCRIPT,
     "--package" to TargetKind.PACKAGE,
+  )
+  private val target by argument(
+    help = "Script url, file path or gradle coordinate to run"
   )
   private val args by argument().multiple()
 
