@@ -1,6 +1,7 @@
 package dev.petuska.ktx.cmd
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.types.file
@@ -11,7 +12,11 @@ import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import kotlin.script.experimental.api.*
+import kotlin.script.experimental.api.EvaluationResult
+import kotlin.script.experimental.api.ResultValue
+import kotlin.script.experimental.api.ResultWithDiagnostics
+import kotlin.script.experimental.api.ScriptDiagnostic
+import kotlin.script.experimental.api.valueOrThrow
 
 @Single
 class Execute : CliktCommand(
@@ -19,8 +24,16 @@ class Execute : CliktCommand(
   hidden = true,
   treatUnknownOptionsAsArgs = true,
 ), KoinComponent {
-  private val target by argument().file(mustExist = true, canBeDir = false)
-  private val args by argument().multiple()
+  init {
+    context { helpOptionNames = setOf() }
+  }
+
+  private val target by argument(
+    help = "Script file path to execute"
+  ).file(mustExist = true, canBeDir = false)
+  private val args by argument(
+    help = "Arguments to be propagated to the script"
+  ).multiple()
 
   private val systemService: SystemService by inject()
   private val ktsService: KtsService by inject()

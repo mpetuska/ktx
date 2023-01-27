@@ -11,7 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Short options for all flags
+- SNAPSHOT installation script for the anxious folk that installs latest and greatest ktx from
+  source
+
 ### Changed
+
+- Internal `execute` command now properly propagates all arguments. This allows installed script
+  usage without the need of `--` bash argument separator.
 
 ### Removed
 
@@ -24,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Removed
+
 - Remove automatic migrations. `ktx migrate` should now be invoked explicitly after each upgrade.
 
 ---
@@ -52,7 +60,8 @@ Maven packages support has landed!
 - New `migrate` command for more future flexibility between version changes
 - Version awareness and new `version` command for self diagnostics
 - `JRE 11+` requirement
-- Script execution with `jvmTarget=11` (temporary, configuration options for this will be added in the future)
+- Script execution with `jvmTarget=11` (temporary, configuration options for this will be added in
+  the future)
 - `kts-samples` with sample scripts that are semi-useful to try ktx out with
 - Maven package execution and installation support
 

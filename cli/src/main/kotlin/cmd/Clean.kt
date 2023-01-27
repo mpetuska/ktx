@@ -14,10 +14,26 @@ import org.koin.core.component.inject
 class Clean : CliktCommand(
   help = "Clean ktx directories",
 ), KoinComponent {
-  private val all by option().flag()
-  private val bin by option().flag()
-  private val cache by option().flag()
-  private val scripts by option().flag()
+  private val all by option(
+    "--all",
+    "-a",
+    help = "Clean all ktx directories"
+  ).flag()
+  private val bin by option(
+    "--bin",
+    "-b",
+    help = "Clean ktx binaries"
+  ).flag()
+  private val cache by option(
+    "--cache",
+    "-c",
+    help = "Clean ktx cache"
+  ).flag()
+  private val scripts by option(
+    "--scripts",
+    "-s",
+    help = "Clean ktx scripts"
+  ).flag()
 
   private val dirService: DirService by inject()
   private val fileSystem: FileSystem by inject()

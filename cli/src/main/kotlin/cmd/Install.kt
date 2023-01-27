@@ -20,13 +20,25 @@ import org.koin.core.component.inject
 class Install : CliktCommand(
   help = "Download and install a script or binary",
 ), KoinComponent {
-  private val target by argument()
-  private val kind by option().switch(
+  private val kind by option(
+    help = "Installation target kind. Detected automatically if not specified"
+  ).switch(
     "--script" to TargetKind.SCRIPT,
     "--jar" to TargetKind.PACKAGE,
   )
-  private val force by option().flag()
-  private val alias by option()
+  private val force by option(
+    "--force",
+    "-f",
+    help = "Override existing installations if any exist"
+  ).flag()
+  private val alias by option(
+    "--alias",
+    "-a",
+    help = "Alias to be set up to access script from the terminal"
+  )
+  private val target by argument(
+    help = "Script url, file path or gradle coordinate to install"
+  )
 
   private val fileSystem: FileSystem by inject()
   private val fileService: FileService by inject()
