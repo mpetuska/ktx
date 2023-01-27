@@ -72,9 +72,3 @@ kotlin-compiler -version
 ```
 
 For sample scripts to play with you can have a look at [kts-samples](./kts-samples)
-
-## Known Issues
-
-- Flag options are not propagated to scripts. To work around it use `--` separator to explicitly
-  denote the start of
-  script (not ktx interpreter) arguments. e.g.: `script -- -version arg1 -flag`
