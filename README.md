@@ -35,10 +35,10 @@ sdk list ktx
 sdk uninstall ktx <version>
 ```
 
-### [Install Script](./scripts/uninstall.sh)
+### [Install Script](./scripts/install.sh)
 
 ```shell
-curl https://raw.githubusercontent.com/mpetuska/ktx/master/scripts/uninstall.sh | bash
+curl https://raw.githubusercontent.com/mpetuska/ktx/master/scripts/install.sh | bash
 ```
 
 ### [Build from Source](./scripts/install-snapshot.sh)
