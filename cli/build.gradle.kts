@@ -14,7 +14,7 @@ dependencies {
   implementation("io.insert-koin:koin-core:3.3.2")
   implementation("io.insert-koin:koin-logger-slf4j:3.3.0")
   implementation("io.insert-koin:koin-annotations:1.1.0")
-  ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
+  ksp("io.insert-koin:koin-ksp-compiler:1.2.2")
 
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
   testImplementation("io.insert-koin:koin-test-junit5:3.3.2")
