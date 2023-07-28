@@ -11,7 +11,7 @@ dependencies {
   implementation("io.ktor:ktor-client-cio:_")
   implementation("com.squareup.okio:okio:_")
 
-  implementation("io.insert-koin:koin-core:3.3.2")
+  implementation("io.insert-koin:koin-core:3.4.3")
   implementation("io.insert-koin:koin-logger-slf4j:3.3.0")
   implementation("io.insert-koin:koin-annotations:1.1.0")
   ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
