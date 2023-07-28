@@ -17,7 +17,7 @@ dependencies {
   ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
 
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
-  testImplementation("io.insert-koin:koin-test-junit5:3.3.2")
+  testImplementation("io.insert-koin:koin-test-junit5:3.4.3")
   testImplementation("com.squareup.okio:okio-fakefilesystem:_")
 }
 
