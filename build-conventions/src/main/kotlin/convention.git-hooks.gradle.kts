@@ -5,8 +5,8 @@ plugins {
 gitHooks {
   setHooks(
     mapOf(
-      "pre-commit" to "detektAll --auto-correct",
-      "pre-push" to "detektAll"
+      "pre-commit" to "detekt --auto-correct",
+      "pre-push" to "detekt"
     )
   )
 }

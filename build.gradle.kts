@@ -1,7 +1,7 @@
 plugins {
   if (System.getenv("CI") == null) id("convention.git-hooks")
   id("convention.common")
-  id("dependency-analysis")
+  id("convention.versions")
 }
 
 gradleEnterprise {

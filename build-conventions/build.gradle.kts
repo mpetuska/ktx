@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   `kotlin-dsl`
 }
@@ -12,22 +9,14 @@ repositories {
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
-  implementation("org.jetbrains.kotlin:kotlin-serialization:_")
-  implementation("com.github.jakemarsden:git-hooks-gradle-plugin:_")
-  implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:_")
-  implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
-  implementation("dev.petuska:klip-gradle-plugin:_")
-  implementation("io.sdkman:gradle-sdkvendor-plugin:_")
-  implementation("com.autonomousapps:dependency-analysis-gradle-plugin:_")
-}
+  implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 
-tasks {
-  withType<KotlinCompile> {
-    compilerOptions {
-      languageVersion.set(KotlinVersion.KOTLIN_1_9)
-    }
-  }
+  implementation(libs.plugin.versions)
+  implementation(libs.plugin.versions.update)
+  implementation(libs.plugin.kotlin)
+  implementation(libs.plugin.kotlin.serialization)
+  implementation(libs.plugin.git.hooks)
+  implementation(libs.plugin.detekt)
 }
 
 gradleEnterprise {

@@ -29,15 +29,15 @@ class Install : CliktCommand(
   private val force by option(
     "--force",
     "-f",
-    help = "Override existing installations if any exist"
+    help = "Override existing installations if any exist",
   ).flag()
   private val alias by option(
     "--alias",
     "-a",
-    help = "Alias to be set up to access script from the terminal"
+    help = "Alias to be set up to access script from the terminal",
   )
   private val target by argument(
-    help = "Script url, file path or gradle coordinate to install"
+    help = "Script url, file path or gradle coordinate to install",
   )
 
   private val fileSystem: FileSystem by inject()

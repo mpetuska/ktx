@@ -1,0 +1,34 @@
+[versions]
+clikt = "4.2.2"
+detekt = "1.23.5"
+kotest = "5.8.1"
+kotlin = "1.9.23"
+kotlinx-coroutines = "1.8.0"
+ksp = "1.9.23-1.0.19"
+ktor = "2.3.9"
+okio = "3.9.0"
+sdkman = "3.0.0"
+
+[libraries]
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+koin-annotations = "io.insert-koin:koin-annotations:1.3.1"
+koin-core = "io.insert-koin:koin-core:3.5.3"
+koin-ksp = "io.insert-koin:koin-ksp-compiler:1.3.1"
+koin-slf4j = "io.insert-koin:koin-logger-slf4j:3.5.3"
+koin-test-junit5 = "io.insert-koin:koin-test-junit5:3.5.3"
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
+plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+plugin-git-hooks = "com.github.jakemarsden:git-hooks-gradle-plugin:0.0.2"
+plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+plugin-versions = "com.github.ben-manes:gradle-versions-plugin:0.47.0"
+plugin-versions-update = "nl.littlerobots.vcu:plugin:0.8.1"
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+sdkman = { id = "io.sdkman.vendors", version.ref = "sdkman" }
