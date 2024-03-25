@@ -1,56 +1,52 @@
 plugins {
   id("convention.kjvm-app")
-  id("com.google.devtools.ksp")
-  id("io.sdkman.vendors")
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.sdkman)
 }
 
 dependencies {
   implementation(kotlin("scripting-jvm-host"))
   implementation(kotlin("main-kts"))
-  implementation("com.github.ajalt.clikt:clikt:_")
-  implementation("io.ktor:ktor-client-cio:_")
-  implementation("com.squareup.okio:okio:_")
+  implementation(libs.clikt)
+  implementation(libs.ktor.client.cio)
+  implementation(libs.okio)
 
-  implementation("io.insert-koin:koin-core:3.3.2")
-  implementation("io.insert-koin:koin-logger-slf4j:3.3.0")
-  implementation("io.insert-koin:koin-annotations:1.1.0")
-  ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
+  implementation(libs.koin.core)
+  implementation(libs.koin.slf4j)
+  implementation(libs.koin.annotations)
+  ksp(libs.koin.ksp)
 
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
-  testImplementation("io.insert-koin:koin-test-junit5:3.3.2")
-  testImplementation("com.squareup.okio:okio-fakefilesystem:_")
-}
-
-sourceSets {
-  main {
-    java.srcDirs(buildDir.resolve("generated/ksp/main/kotlin"))
-  }
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.koin.test.junit5)
+  testImplementation(libs.okio.fakefilesystem)
 }
 
 kotlin {
   sourceSets {
     test {
-      languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+      languageSettings{
+        optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+      }
     }
   }
 }
 
 application {
-  mainClass.set("dev.petuska.ktx.MainKt")
+  mainClass = "dev.petuska.ktx.MainKt"
   applicationName = rootProject.name
 }
 
 sdkman {
-  candidate.set(rootProject.name)
-  version.set("${project.version}")
-  url.set("https://github.com/mpetuska/ktx/releases/download/${project.version}/ktx-${project.version}.zip")
-  hashtag.set(rootProject.name)
+  candidate = rootProject.name
+  version = "${project.version}"
+  url = "https://github.com/mpetuska/ktx/releases/download/${project.version}/ktx-${project.version}.zip"
+  hashtag = rootProject.name
 }
 
 tasks {
   register("processDist", Copy::class) {
     inputs.property("version", version)
-    destinationDir = buildDir.resolve("resources/dist")
+    destinationDir = layout.buildDirectory.dir("resources/dist").get().asFile
     from(projectDir.resolve("src/main/dist"))
     doLast {
       destinationDir.resolve(".version").writeText("$version")
@@ -62,9 +58,6 @@ tasks {
     doLast {
       destinationDir.resolve(".version").writeText("$version")
     }
-  }
-  afterEvaluate {
-    named("explodeCodeSourceMain") { dependsOn("kspKotlin") }
   }
 }
 

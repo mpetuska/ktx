@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [SNAPSHOT]
 
 ### Added
 
 - Short options for all flags
 - SNAPSHOT installation script for the anxious folk that installs latest and greatest ktx from
   source
+- New `link` command that allows linking a given script instead of copying it into ktx cache. Useful when you need to
+  modify the script often as all the changes to the original are immediately reflected on the linked path entry.
 
 ### Changed
 
@@ -96,7 +98,7 @@ Initial developer preview release
 
 ---
 
-[Unreleased]: https://github.com/mpetuska/ktx/compare/0.1.2...HEAD
+[SNAPSHOT]: https://github.com/mpetuska/ktx/compare/0.1.2...HEAD
 
 [0.1.2]: https://github.com/mpetuska/ktx/compare/0.1.1...0.1.2
 

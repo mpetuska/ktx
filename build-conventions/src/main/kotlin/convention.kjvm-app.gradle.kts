@@ -9,7 +9,7 @@ plugins {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-assertions-core:_")
+  testImplementation(libs.kotest.assertions.core)
 }
 
 java {
@@ -22,7 +22,7 @@ tasks {
   }
   withType<KotlinCompile> {
     compilerOptions {
-      jvmTarget.set(provider { JvmTarget.fromTarget("${java.targetCompatibility}") })
+      jvmTarget = JvmTarget.JVM_11
     }
   }
 }

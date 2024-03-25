@@ -21,7 +21,7 @@ class ResourceService(
   private val fileSystem: FileSystem,
 ) {
   suspend fun resolve(target: String, kind: TargetKind?): Path {
-    val script: Path = when (kind ?: guessKind(target)) {
+    val script: Path = when (kind ?: TargetKind.guess(target)) {
       TargetKind.PACKAGE -> cacheRemotePackage(target)
       TargetKind.SCRIPT -> if (target.isUrl()) cacheRemoteResource(target) else target.toPath()
     }
@@ -40,7 +40,7 @@ class ResourceService(
       val manifestPath = "/META-INF/MANIFEST.MF".toPath()
       require(zipTree.exists(manifestPath)) { "$jarUrl is missing $manifestPath and therefore is not executable" }
       val mainClass = zipTree.read(manifestPath) { readUtf8() }.split("\n").first { it.startsWith("Main-Class") }
-        .substringAfter("Main-Class: ").trim()
+        .substringAfter("Main-Class:").trim()
       fileService.writeCache(
         name = name,
         force = true,
@@ -61,10 +61,5 @@ class ResourceService(
       force = true,
       content = Buffer().readFrom(httpClient.get(target) { expectSuccess = true }.bodyAsChannel().toInputStream()),
     )
-  }
-
-  private fun guessKind(target: String): TargetKind = when {
-    target.split(":").size == 3 && !target.contains("/") -> TargetKind.PACKAGE
-    else -> TargetKind.SCRIPT
   }
 }

@@ -67,7 +67,7 @@ if (wrapper.exists()) {
   val arguments = args.map { arg ->
     if (arg.startsWith("-")) arg else "$project$arg"
   }
-  if(debug) println("Running [$wrapper, $arguments] from ${wrapper.parentFile}")
+  if (debug) println("Running [$wrapper, $arguments] from ${wrapper.parentFile}")
   @Suppress("SpreadOperator")
   ProcessBuilder("$wrapper", *arguments.toTypedArray())
     .inheritIO()

@@ -18,6 +18,9 @@ class FileService(
     return link
   }
 
+  fun writeBin(name: String, content: Source, force: Boolean = false): Path =
+    write(target = dirService.bin.resolve(name), content = content, force = force)
+
   fun writeCache(name: String, content: Source, force: Boolean = false) =
     write(target = dirService.cache.resolve(name), content = content, force = force)
 
